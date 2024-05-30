@@ -1,11 +1,36 @@
-{% extends 'basic.html' %}
-{% block title %}
-About Us
-{% endblock title %}
-{% block about %}
-menu-active
-{% endblock about %}
+{% extends 'base.html' %} {% block title %} About {% endblock title %} {% block
+style %}
+<!-- Additional styles if any -->
+{% endblock style %} {% block body %}
+<div class="container mt-5">
+	<h1 class="mb-4 pb-0">About</h1>
 
-{% block body %}
-<h2 class="text-center text-danger">About Us</h2>
+	<div class="card">
+		<div class="card-body">
+			<h2 class="card-title">Student Management System</h2>
+			<p class="card-text">
+				The "Student Management System" is a sophisticated Full Stack project
+				using CSS, HTML, MySQL, Python, and Flask, streamlining student-related
+				tasks. With features like real-time updates and automation, it ensures
+				efficient data management, enhancing collaboration in educational
+				environments.
+			</p>
+
+			<h3 class="card-subtitle mb-2">Project Overview</h3>
+			<p class="card-text">
+				Developed a comprehensive Student Management System as a Full-Stack
+				Development (FSD) project with a strong emphasis on Database Management
+				Systems (DBMS). The system integrated front-end and back-end components
+				to facilitate efficient data entry, retrieval, and reporting for
+				educational institutions. Employed technologies such as HTML, CSS,
+				JavaScript, and a relational database (e.g., MySQL) for data storage and
+				retrieval. The project showcased my proficiency in both front-end and
+				back-end development, as well as effective DBMS design and
+				implementation. Its success in enhancing efficiency and data management
+				aligns with my goal to contribute technology-driven solutions in the
+				education sector.
+			</p>
+		</div>
+	</div>
+</div>
 {% endblock body %}

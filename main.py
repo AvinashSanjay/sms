@@ -4,7 +4,6 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import login_user,logout_user,login_manager,LoginManager
 from flask_login import login_required,current_user
-import json
 
 # MY db connection
 local_server= True
@@ -21,9 +20,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-
-# app.config['SQLALCHEMY_DATABASE_URL']='mysql://username:password@localhost/databas_table_name'
-app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:@localhost/sms_mp'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:@localhost:3306/sms_mp'
 db=SQLAlchemy(app)
 
 # here we will create db models that is tables
@@ -55,9 +52,6 @@ class User(UserMixin,db.Model):
     password=db.Column(db.String(1000))
 
 
-
-
-
 class Student(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     rollno=db.Column(db.String(50))
@@ -68,20 +62,29 @@ class Student(db.Model):
     email=db.Column(db.String(50))
     number=db.Column(db.String(12))
     address=db.Column(db.String(100))
-    
 
+    # def __init__(self, rollno, sname, sem, gender, branch, email, number, address):
+    #     self.rollno = rollno
+    #     self.gender = gender
+    #     self.sname = sname
+    #     self.sem = sem
+    #     self.branch = branch
+    #     self.email = email
+    #     self.number = number
+    #     self.address = address
+    
 @app.route('/')
 def index(): 
     return render_template('index.html')
 
 @app.route('/studentdetails')
 def studentdetails():
-    query=db.engine.execute(f"SELECT * FROM `student`") 
+    query=Student.query.all()
     return render_template('studentdetails.html',query=query)
 
 @app.route('/triggers')
 def triggers():
-    query=db.engine.execute(f"SELECT * FROM `trig`") 
+    query=Trig.query.all()
     return render_template('triggers.html',query=query)
 
 @app.route('/department',methods=['POST','GET'])
@@ -100,7 +103,7 @@ def department():
 
 @app.route('/addattendance',methods=['POST','GET'])
 def addattendance():
-    query=db.engine.execute(f"SELECT * FROM `student`") 
+    query=Student.query.all() 
     if request.method=="POST":
         rollno=request.form.get('rollno')
         attend=request.form.get('attend')
@@ -130,26 +133,52 @@ def delete(id):
     flash("Slot Deleted Successful","danger")
     return redirect('/studentdetails')
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
 
 @app.route("/edit/<string:id>",methods=['POST','GET'])
 @login_required
 def edit(id):
-    dept=db.engine.execute("SELECT * FROM `department`")
-    posts=Student.query.filter_by(id=id).first()
-    if request.method=="POST":
-        rollno=request.form.get('rollno')
-        sname=request.form.get('sname')
-        sem=request.form.get('sem')
-        gender=request.form.get('gender')
-        branch=request.form.get('branch')
-        email=request.form.get('email')
-        num=request.form.get('num')
-        address=request.form.get('address')
-        query=db.engine.execute(f"UPDATE `student` SET `rollno`='{rollno}',`sname`='{sname}',`sem`='{sem}',`gender`='{gender}',`branch`='{branch}',`email`='{email}',`number`='{num}',`address`='{address}'")
-        flash("Slot is Updates","success")
-        return redirect('/studentdetails')
+    # Retrieve the department information
+    dept = Department.query.all()  # Assuming Department is your model name for the department table
     
-    return render_template('edit.html',posts=posts,dept=dept)
+    # Retrieve the student details
+    post = Student.query.filter_by(id=id).first()
+    
+    if request.method == "POST":
+        # Get form data
+        rollno = request.form.get('rollno')
+        sname = request.form.get('sname')
+        sem = request.form.get('sem')
+        gender = request.form.get('gender')
+        branch = request.form.get('branch')
+        email = request.form.get('email')
+        num = request.form.get('num')
+        address = request.form.get('address')
+        
+        # Update the student details
+        if post:
+            post.rollno = rollno
+            post.sname = sname
+            post.sem = sem
+            post.gender = gender
+            post.branch = branch
+            post.email = email
+            post.number = num
+            post.address = address
+            
+            # Commit the changes to the database
+            db.session.commit()
+            
+            flash("Student details updated successfully", "success")
+            return redirect('/studentdetails')
+        else:
+            flash("Student not found", "danger")
+            return redirect('/studentdetails')
+
+    return render_template('edit.html', post=post, dept=dept)
 
 
 @app.route('/signup',methods=['POST','GET'])
@@ -164,12 +193,12 @@ def signup():
             return render_template('/signup.html')
         encpassword=generate_password_hash(password)
 
-        new_user=db.engine.execute(f"INSERT INTO `user` (`username`,`email`,`password`) VALUES ('{username}','{email}','{encpassword}')")
+        # new_user=db.engine.execute(f"INSERT INTO `user` (`username`,`email`,`password`) VALUES ('{username}','{email}','{encpassword}')")
 
         # this is method 2 to save data in db
-        # newuser=User(username=username,email=email,password=encpassword)
-        # db.session.add(newuser)
-        # db.session.commit()
+        newuser=User(username=username,email=email,password=encpassword)
+        db.session.add(newuser)
+        db.session.commit()
         flash("Signup Succes Please Login","success")
         return render_template('login.html')
 
@@ -187,7 +216,7 @@ def login():
         if user and check_password_hash(user.password,password):
             login_user(user)
             flash("Login Success","primary")
-            return redirect(url_for('index'))
+            return render_template('index.html', message=("primary","Logged in"))
         else:
             flash("invalid credentials","danger")
             return render_template('login.html')    
@@ -206,7 +235,7 @@ def logout():
 @app.route('/addstudent',methods=['POST','GET'])
 @login_required
 def addstudent():
-    dept=db.engine.execute("SELECT * FROM `department`")
+    dept=Department.query.all()
     if request.method=="POST":
         rollno=request.form.get('rollno')
         sname=request.form.get('sname')
@@ -216,13 +245,17 @@ def addstudent():
         email=request.form.get('email')
         num=request.form.get('num')
         address=request.form.get('address')
-        query=db.engine.execute(f"INSERT INTO `student` (`rollno`,`sname`,`sem`,`gender`,`branch`,`email`,`number`,`address`) VALUES ('{rollno}','{sname}','{sem}','{gender}','{branch}','{email}','{num}','{address}')")
-    
 
+        new_student = Student(rollno, sname, sem, gender, branch, email, num, address)
+
+        db.session.add(new_student)
+        db.session.commit()
+    
         flash("Booking Confirmed","info")
 
 
     return render_template('student.html',dept=dept)
+
 @app.route('/test')
 def test():
     try:
@@ -232,4 +265,5 @@ def test():
         return 'My db is not Connected'
 
 
-app.run(debug=True)    
+def Run():
+    app.run(debug=True)    

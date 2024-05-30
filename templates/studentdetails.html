@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+		<title>{% block title %}Student Details {% endblock title %}</title>
+		<meta content="" name="description" />
+		<meta content="" name="keywords" />
+
+		<link
+			href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Raleway:300,400,500,700,800"
+			rel="stylesheet"
+		/>
+
+		<!-- Vendor CSS Files -->
+		<link
+			href="static/assets/vendor/bootstrap/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+		<link href="static/assets/vendor/venobox/venobox.css" rel="stylesheet" />
+		<link
+			href="static/assets/vendor/font-awesome/css/font-awesome.min.css"
+			rel="stylesheet"
+		/>
+		<link
+			href="static/assets/vendor/owl.carousel/assets/owl.carousel.min.css"
+			rel="stylesheet"
+		/>
+		<link href="static/assets/vendor/aos/aos.css" rel="stylesheet" />
+
+		<!-- Template Main CSS File -->
+		<link href="static/assets/css/style2.css" rel="stylesheet" />
+		{% block style %}
+		<style>
+			body {
+				background-image: url("../static/images/bg1.jpg"); /* Replace 'path/to/your/image.jpg' with the actual path to your background image */
+				background-size: cover;
+				background-position: center;
+				height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin: 0;
+				padding: 0;
+			}
+			.container {
+				background-color: rgba(
+					255,
+					255,
+					255,
+					0.8
+				); /* Adjust the opacity as needed */
+				padding: 20px;
+				border-radius: 10px;
+			}
+		</style>
+		{% endblock style %}
+	</head>
+	<body>
+		<div class="container mt-5">
+			<h1 class="mb-4 pb-0">Student Details</h1>
+
+			{% with messages = get_flashed_messages(with_categories=true) %} {% if
+			messages %} {% for category, message in messages %}
+			<div
+				class="alert alert-{{ category }} alert-dismissible fade show"
+				role="alert"
+			>
+				{{ message }}
+				<button
+					type="button"
+					class="close"
+					data-dismiss="alert"
+					aria-label="Close"
+				>
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{% endfor %} {% endif %} {% endwith %}
+
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th scope="col">Roll Number</th>
+						<th scope="col">Name</th>
+						<th scope="col">Semester</th>
+						<th scope="col">Gender</th>
+						<th scope="col">Branch</th>
+						<th scope="col">Email</th>
+						<th scope="col">Phone Number</th>
+						<th scope="col">Address</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for student in query %}
+					<tr>
+						<td>{{ student.rollno }}</td>
+						<td>{{ student.sname }}</td>
+						<td>{{ student.sem }}</td>
+						<td>{{ student.gender }}</td>
+						<td>{{ student.branch }}</td>
+						<td>{{ student.email }}</td>
+						<td>{{ student.number }}</td>
+						<td>{{ student.address }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

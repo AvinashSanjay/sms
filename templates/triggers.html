@@ -1,0 +1,44 @@
+{% extends 'base.html' %} {% block title %} Triggers {% endblock title %} {%
+block style %}
+<!-- Additional styles if any -->
+{% endblock style %} {% block body %}
+<div class="container mt-5">
+	<h1 class="mb-4 pb-0">Triggers</h1>
+
+	{% with messages = get_flashed_messages(with_categories=true) %} {% if
+	messages %} {% for category, message in messages %}
+	<div
+		class="alert alert-{{ category }} alert-dismissible fade show"
+		role="alert"
+	>
+		{{ message }}
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	{% endfor %} {% endif %} {% endwith %}
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th scope="col">ID</th>
+				<th scope="col">Name</th>
+				<th scope="col">Description</th>
+				<th scope="col">Time</th>
+				<!-- Add more table headings if needed -->
+			</tr>
+		</thead>
+		<tbody>
+			{% for trigger in query %}
+			<tr>
+				<td>{{ trigger.tid }}</td>
+				<td>{{ trigger.rollno }}</td>
+				<td>{{ trigger.action }}</td>
+				<td>{{ trigger.timestamp }}</td>
+				<!-- Add more table cells if needed -->
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock body %}

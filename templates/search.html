@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+		<title>{% block title %} {% endblock title %}</title>
+		<meta content="" name="description" />
+		<meta content="" name="keywords" />
+
+		<link
+			href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Raleway:300,400,500,700,800"
+			rel="stylesheet"
+		/>
+
+		<!-- Vendor CSS Files -->
+		<link
+			href="static/assets/vendor/bootstrap/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+		<link href="static/assets/vendor/venobox/venobox.css" rel="stylesheet" />
+		<link
+			href="static/assets/vendor/font-awesome/css/font-awesome.min.css"
+			rel="stylesheet"
+		/>
+		<link
+			href="static/assets/vendor/owl.carousel/assets/owl.carousel.min.css"
+			rel="stylesheet"
+		/>
+		<link href="static/assets/vendor/aos/aos.css" rel="stylesheet" />
+
+		<!-- Template Main CSS File -->
+		<link href="static/assets/css/style2.css" rel="stylesheet" />
+		{% block style %}
+		<style>
+			body {
+				background-image: url("../static/images/bg1.jpg"); /* Replace 'path/to/your/image.jpg' with the actual path to your background image */
+				background-size: cover;
+				background-position: center;
+				height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin: 0;
+				padding: 0;
+			}
+			.container {
+				background-color: rgba(
+					255,
+					255,
+					255,
+					0.8
+				); /* Adjust the opacity as needed */
+				padding: 20px;
+				border-radius: 10px;
+			}
+		</style>
+		{% endblock style %}
+	</head>
+
+	<body>
+		<div class="container mt-5">
+			<h1 class="mb-4 pb-0">Search</h1>
+
+			<form action="/search" method="post" class="mt-3">
+				<div class="form-group">
+					<label for="roll">Enter Roll Number:</label>
+					<input
+						type="text"
+						class="form-control"
+						id="roll"
+						name="roll"
+						required
+					/>
+				</div>
+				<button type="submit" class="btn btn-primary">Search</button>
+			</form>
+
+			{% if bio %}
+			<h2 class="mt-5">Student Bio:</h2>
+			<p><strong>Roll Number:</strong> {{ bio.rollno }}</p>
+			<p><strong>Name:</strong> {{ bio.sname }}</p>
+			<p><strong>Semester:</strong> {{ bio.sem }}</p>
+			<p><strong>Gender:</strong> {{ bio.gender }}</p>
+			<p><strong>Branch:</strong> {{ bio.branch }}</p>
+			<p><strong>Email:</strong> {{ bio.email }}</p>
+			<p><strong>Phone Number:</strong> {{ bio.number }}</p>
+			<p><strong>Address:</strong> {{ bio.address }}</p>
+			{% endif %} {% if attend %}
+			<h2 class="mt-5">Attendance:</h2>
+			<p><strong>Roll Number:</strong> {{ attend.rollno }}</p>
+			<p><strong>Attendance:</strong> {{ attend.attendance }}</p>
+			<!-- Add more attendance details if needed -->
+			{% endif %}
+		</div>
+	</body>
+</html>
